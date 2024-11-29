@@ -17,6 +17,7 @@ const Header = styled.header`
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 3rem;
 `;
 
 const CoinsList = styled.ul``;
@@ -67,20 +68,9 @@ const Img = styled.img`
 `;
 
 function Coins() {
-  // const [coins, setCoins] = useState<CoinInterface[]>([]);
-  // const [loading, setLoding] = useState(true);
-  // useEffect(() => {
-  //   (async () => {
-  //     const response = await fetch("https://api.coinpaprika.com/v1/coins");
-  //     const json = await response.json();
-  //     setCoins(json.slice(0, 100));
-  //     setLoding(false);
-  //   })();
-  // }, []);
   const setDarkAtom = useSetRecoilState(isDarkAtom);
   const toggleDarkAtom = () => setDarkAtom(prev => !prev)
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
-  // console.log(coins);
   return (
     <Container>
       <Helmet>
@@ -94,7 +84,7 @@ function Coins() {
         <Loader>"Loading..."</Loader>
       ) : (
         <CoinsList>
-          {data?.slice(0, 100).map((coin) => (
+    {Array.isArray(data) && data.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
               <Link
                 to={{

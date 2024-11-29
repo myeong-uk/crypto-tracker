@@ -3,7 +3,6 @@ import { fetchCoinHistory } from "../api";
 import ApexChart from "react-apexcharts";
 import { useRecoilValue } from "recoil";
 import { isDarkAtom } from "./atoms";
-import React from "react";
 
 interface IHistorical {
   time_open: number;

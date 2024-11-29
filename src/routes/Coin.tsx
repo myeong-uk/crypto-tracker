@@ -1,4 +1,4 @@
-import {Helmet} from "react-helmet"
+import { Helmet } from "react-helmet";
 import {
   Switch,
   Route,
@@ -6,6 +6,7 @@ import {
   useParams,
   useRouteMatch,
   Link,
+  useHistory,
 } from "react-router-dom";
 import styled from "styled-components";
 import Chart from "./Chart";
@@ -122,7 +123,7 @@ interface InfoData {
   last_data_at: string;
 }
 
-interface PriceData {
+export interface PriceData {
   id: string;
   name: string;
   symbol: string;
@@ -160,6 +161,11 @@ function Coin() {
   const { state } = useLocation<RouteState>();
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
+  const history = useHistory();
+
+  const handleMoveBack = () => {
+    history.push("/");
+  };
   const { isLoading: infoLoaing, data: infoData } = useQuery<InfoData>(
     ["info", coinId],
     () => fetchCoinInfo(coinId)
@@ -171,24 +177,6 @@ function Coin() {
       refetchInterval: 5000,
     }
   );
-  // const [loading, setLoading] = useState(true);
-  // const [info, setInfo] = useState<InfoData>();
-  // const [priceInfo, setPriceInfo] = useState<PriceData>();
-  // useEffect(() => {
-  //   (async () => {
-  //     const infoData = await (
-  //       await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-  //     ).json();
-  //     const priceData = await (
-  //       await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-  //     ).json();
-  //     setInfo(infoData);
-  //     setPriceInfo(priceData);
-  //     // console.log(info);
-  //     // console.log(priceInfo);
-  //     setLoading(false)
-  //   })();
-  // }, [coinId]);
   const loading = infoLoaing || tickersLoaing;
   return (
     <Container>
@@ -197,11 +185,14 @@ function Coin() {
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </title>
       </Helmet>
+
       <Header>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
+        <div></div>
       </Header>
+      <button onClick={handleMoveBack}>뒤로 가기</button>
       {loading ? (
         <Loader>Loading...</Loader>
       ) : (
@@ -243,7 +234,7 @@ function Coin() {
 
           <Switch>
             <Route path={`/:coinId/price`}>
-              <Price />
+            {tickersData && <Price tickersData={tickersData} />}
             </Route>
             <Route path={`/:coinId/chart`}>
               <Chart coinId={coinId} />
